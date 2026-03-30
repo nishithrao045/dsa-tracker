@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DSA Grind — Striver SDE Sheet</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #1a1a24;
+    --border: #2a2a3a;
+    --accent: #7fff6e;
+    --accent2: #ff6b6b;
+    --accent3: #ffd166;
+    --accent4: #74b9ff;
+    --text: #e8e8f0;
+    --muted: #666680;
+    --easy: #7fff6e;
+    --medium: #ffd166;
+    --hard: #ff6b6b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(127,255,110,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(127,255,110,0.03) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+    z-index: 0;
+  }
+  #app { position: relative; z-index: 1; }
+  header {
+    padding: 20px 32px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(10,10,15,0.92);
+    backdrop-filter: blur(12px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .logo {
+    font-family: 'Space Mono', monospace;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .logo span { color: var(--muted); }
+  .header-stats { display: flex; gap: 20px; align-items: center; }
+  .hstat { text-align: right; }
+  .hstat-val { font-family: 'Space Mono', monospace; font-size: 1.25rem; font-weight: 700; color: var(--accent); line-height: 1; }
+  .hstat-label { font-size: 0.6rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+  .day-badge { background: var(--accent); color: var(--bg); font-family: 'Space Mono', monospace; font-weight: 700; font-size: 0.7rem; padding: 5px 12px; border-radius: 2px; letter-spacing: 0.5px; }
+  .container { max-width: 1080px; margin: 0 auto; padding: 32px 24px; }
+  .section-label { font-family: 'Space Mono', monospace; font-size: 0.6rem; color: var(--muted); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px; }
+  .big-progress { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 22px 28px; display: grid; grid-template-columns: 1fr auto; gap: 20px; align-items: center; margin-bottom: 40px; }
+  .progress-bar-track { height: 6px; background: var(--surface2); border-radius: 2px; overflow: hidden; margin-top: 10px; }
+  .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent), #a8ff9a); border-radius: 2px; transition: width 0.6s cubic-bezier(0.4,0,0.2,1); }
+  .progress-text { font-size: 0.75rem; color: var(--muted); margin-top: 6px; }
+  .big-progress-num { font-family: 'Space Mono', monospace; font-size: 2.8rem; font-weight: 700; color: var(--accent); line-height: 1; }
+  .big-progress-sub { font-size: 0.65rem; color: var(--muted); text-align: right; margin-top: 4px; }
+  .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 40px; }
+  .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 16px 18px; }
+  .stat-num { font-family: 'Space Mono', monospace; font-size: 1.7rem; font-weight: 700; line-height: 1; }
+  .stat-num.easy { color: var(--easy); }
+  .stat-num.medium { color: var(--medium); }
+  .stat-num.hard { color: var(--hard); }
+  .stat-label { font-size: 0.65rem; color: var(--muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 1px; }
+  .calendar-strip { display: flex; gap: 4px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; margin-bottom: 36px; }
+  .calendar-strip::-webkit-scrollbar { display: none; }
+  .cal-day { min-width: 34px; height: 34px; border: 1px solid var(--border); border-radius: 2px; display: flex; align-items: center; justify-content: center; font-family: 'Space Mono', monospace; font-size: 0.6rem; color: var(--muted); cursor: pointer; transition: all 0.15s; flex-shrink: 0; }
+  .cal-day:hover:not(.future) { border-color: var(--accent); color: var(--accent); }
+  .cal-day.done { background: var(--accent); border-color: var(--accent); color: var(--bg); font-weight: 700; }
+  .cal-day.partial { background: rgba(127,255,110,0.12); border-color: var(--accent); color: var(--accent); }
+  .cal-day.today { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); color: var(--accent); font-weight: 700; }
+  .cal-day.missed { border-color: var(--accent2); color: var(--accent2); }
+  .cal-day.future { opacity: 0.25; cursor: default; }
+  .day-nav { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
+  .day-title { font-size: 1.5rem; font-weight: 800; flex: 1; }
+  .day-title span { color: var(--accent); font-family: 'Space Mono', monospace; }
+  .nav-btn { background: var(--surface); border: 1px solid var(--border); color: var(--text); width: 34px; height: 34px; border-radius: 2px; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+  .nav-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .scroll-today { background: transparent; border: 1px solid var(--accent); color: var(--accent); font-family: 'Space Mono', monospace; font-size: 0.62rem; padding: 5px 10px; border-radius: 2px; cursor: pointer; transition: all 0.15s; letter-spacing: 0.3px; }
+  .scroll-today:hover { background: rgba(127,255,110,0.08); }
+  .missed-alert { background: rgba(255,107,107,0.07); border: 1px solid rgba(255,107,107,0.3); border-radius: 4px; padding: 12px 16px; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+  .missed-alert-icon { font-size: 1rem; }
+  .missed-alert-text { font-size: 0.82rem; color: var(--accent2); }
+  .missed-alert-text strong { font-weight: 700; }
+  .day-progress-bar { height: 4px; background: var(--surface2); border-radius: 2px; overflow: hidden; margin-bottom: 12px; }
+  .day-progress-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.4s ease; }
+  .day-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+  .day-count { font-family: 'Space Mono', monospace; font-size: 0.72rem; color: var(--muted); }
+  .day-count strong { color: var(--accent); }
+  .reset-btn { background: transparent; border: 1px solid var(--border); color: var(--muted); font-family: 'Space Mono', monospace; font-size: 0.6rem; padding: 5px 10px; border-radius: 2px; cursor: pointer; transition: all 0.15s; }
+  .reset-btn:hover { border-color: var(--accent2); color: var(--accent2); }
+  .problems-grid { display: flex; flex-direction: column; gap: 7px; }
+  .problem-card { background: var(--surface); border: 1px solid var(--border); border-left: 3px solid transparent; border-radius: 4px; padding: 12px 16px; display: grid; grid-template-columns: auto 1fr auto auto; gap: 10px 14px; align-items: center; transition: all 0.18s; cursor: pointer; }
+  .problem-card:hover { border-color: #3a3a50; background: var(--surface2); }
+  .problem-card.solved { border-left-color: var(--accent); }
+  .problem-card.solved .problem-name { text-decoration: line-through; color: var(--muted); }
+  .problem-check { width: 18px; height: 18px; border: 2px solid var(--border); border-radius: 2px; display: flex; align-items: center; justify-content: center; transition: all 0.15s; flex-shrink: 0; }
+  .problem-card.solved .problem-check { background: var(--accent); border-color: var(--accent); }
+  .check-icon { display: none; font-size: 0.6rem; color: var(--bg); font-weight: 900; }
+  .problem-card.solved .check-icon { display: block; }
+  .problem-name { font-size: 0.88rem; font-weight: 600; transition: color 0.15s; }
+  .problem-topic { font-size: 0.65rem; color: var(--muted); font-family: 'Space Mono', monospace; margin-top: 2px; }
+  .diff-badge { font-family: 'Space Mono', monospace; font-size: 0.58rem; padding: 3px 7px; border-radius: 2px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; }
+  .diff-Easy { background: rgba(127,255,110,0.1); color: var(--easy); border: 1px solid rgba(127,255,110,0.2); }
+  .diff-Medium { background: rgba(255,209,102,0.1); color: var(--medium); border: 1px solid rgba(255,209,102,0.2); }
+  .diff-Hard { background: rgba(255,107,107,0.1); color: var(--hard); border: 1px solid rgba(255,107,107,0.2); }
+  .lc-link { font-family: 'Space Mono', monospace; font-size: 0.58rem; color: var(--accent4); text-decoration: none; padding: 3px 7px; border: 1px solid rgba(116,185,255,0.2); border-radius: 2px; transition: all 0.15s; white-space: nowrap; }
+  .lc-link:hover { background: rgba(116,185,255,0.1); }
+  footer { text-align: center; padding: 40px 24px; border-top: 1px solid var(--border); margin-top: 60px; font-size: 0.65rem; color: var(--muted); font-family: 'Space Mono', monospace; }
+  @media (max-width: 600px) {
+    header { padding: 14px 16px; flex-wrap: wrap; gap: 10px; }
+    .container { padding: 18px 14px; }
+    .big-progress { grid-template-columns: 1fr; }
+    .big-progress-num { font-size: 2rem; }
+    .big-progress-sub { text-align: left; }
+    .problem-card { grid-template-columns: auto 1fr auto; }
+    .lc-link { display: none; }
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <div class="logo">DSA<span>/</span>GRIND</div>
+    <div class="header-stats">
+      <div class="hstat"><div class="hstat-val" id="h-solved">0</div><div class="hstat-label">Solved</div></div>
+      <div class="hstat"><div class="hstat-val" id="h-remaining">191</div><div class="hstat-label">Left</div></div>
+      <div class="day-badge" id="h-day">DAY 1</div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="section-label">// overall progress · striver sde sheet · 30-day sprint</div>
+    <div class="big-progress">
+      <div>
+        <div style="font-size:0.78rem;color:var(--muted);">191 problems across Arrays, LL, Trees, Graphs, DP & more</div>
+        <div class="progress-bar-track"><div class="progress-bar-fill" id="main-bar" style="width:0%"></div></div>
+        <div class="progress-text" id="main-bar-text">0 / 191 problems completed</div>
+      </div>
+      <div>
+        <div class="big-progress-num" id="pct-num">0%</div>
+        <div class="big-progress-sub" id="days-left-text">30 days remaining</div>
+      </div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-num easy" id="s-easy">0</div><div class="stat-label">Easy Solved</div></div>
+      <div class="stat-card"><div class="stat-num medium" id="s-medium">0</div><div class="stat-label">Medium Solved</div></div>
+      <div class="stat-card"><div class="stat-num hard" id="s-hard">0</div><div class="stat-label">Hard Solved</div></div>
+    </div>
+
+    <div class="section-label">// 30-day calendar (click any past day)</div>
+    <div class="calendar-strip" id="cal-strip"></div>
+
+    <div class="day-nav">
+      <button class="nav-btn" id="prev-btn">←</button>
+      <div class="day-title">Day <span id="cur-day-num">1</span> <span style="color:var(--muted);font-size:0.95rem;font-family:'Space Mono',monospace;" id="cur-date-str"></span></div>
+      <button class="scroll-today" id="today-btn">→ Today</button>
+      <button class="nav-btn" id="next-btn">→</button>
+    </div>
+
+    <div id="missed-alert" class="missed-alert" style="display:none">
+      <div class="missed-alert-icon">⚠</div>
+      <div class="missed-alert-text" id="missed-text"></div>
+    </div>
+
+    <div class="day-progress-bar"><div class="day-progress-fill" id="day-bar" style="width:0%"></div></div>
+    <div class="day-meta">
+      <div class="day-count" id="day-count-text"><strong>0</strong> / 0 done today</div>
+      <button class="reset-btn" onclick="resetProgress()">⟳ Reset All</button>
+    </div>
+
+    <div class="problems-grid" id="problems-list"></div>
+  </div>
+  <footer>// striver sde sheet · 191 problems · auto-distributed · 30-day sprint · good luck nishith 🟢</footer>
+</div>
+
+<script>
+const SDE_SHEET = [
+  {name:"Set Matrix Zeros",topic:"Arrays",diff:"Medium",lc:"https://leetcode.com/problems/set-matrix-zeroes/"},
+  {name:"Pascal's Triangle",topic:"Arrays",diff:"Easy",lc:"https://leetcode.com/problems/pascals-triangle/"},
+  {name:"Next Permutation",topic:"Arrays",diff:"Medium",lc:"https://leetcode.com/problems/next-permutation/"},
+  {name:"Kadane's Algorithm — Max Subarray",topic:"Arrays",diff:"Medium",lc:"https://leetcode.com/problems/maximum-subarray/"},
+  {name:"Sort Colors (0/1/2)",topic:"Arrays",diff:"Medium",lc:"https://leetcode.com/problems/sort-colors/"},
+  {name:"Best Time to Buy and Sell Stock",topic:"Arrays",diff:"Easy",lc:"https://leetcode.com/problems/best-time-to-buy-and-sell-stock/"},
+  {name:"Rotate Matrix 90°",topic:"Arrays",diff:"Medium",lc:"https://leetcode.com/problems/rotate-image/"},
+  {name:"Merge Overlapping Intervals",topic:"Arrays",diff:"Medium",lc:"https://leetcode.com/problems/merge-intervals/"},
+  {name:"Merge Two Sorted Arrays",topic:"Arrays",diff:"Easy",lc:"https://leetcode.com/problems/merge-sorted-array/"},
+  {name:"Find Duplicate in Array",topic:"Arrays",diff:"Medium",lc:"https://leetcode.com/problems/find-the-duplicate-number/"},
+  {name:"Repeat and Missing Number",topic:"Arrays",diff:"Hard",lc:"https://leetcode.com/problems/set-mismatch/"},
+  {name:"Count Inversions",topic:"Arrays",diff:"Hard",lc:"https://leetcode.com/problems/sort-an-array/"},
+  {name:"Search in 2D Matrix",topic:"Matrix",diff:"Medium",lc:"https://leetcode.com/problems/search-a-2d-matrix/"},
+  {name:"Pow(x, n)",topic:"Math",diff:"Medium",lc:"https://leetcode.com/problems/powx-n/"},
+  {name:"Majority Element (>N/2)",topic:"Arrays",diff:"Easy",lc:"https://leetcode.com/problems/majority-element/"},
+  {name:"Majority Element (>N/3)",topic:"Arrays",diff:"Medium",lc:"https://leetcode.com/problems/majority-element-ii/"},
+  {name:"Grid Unique Paths",topic:"DP",diff:"Medium",lc:"https://leetcode.com/problems/unique-paths/"},
+  {name:"Reverse Pairs",topic:"Arrays",diff:"Hard",lc:"https://leetcode.com/problems/reverse-pairs/"},
+  {name:"2-Sum Problem",topic:"Arrays",diff:"Easy",lc:"https://leetcode.com/problems/two-sum/"},
+  {name:"4-Sum Problem",topic:"Arrays",diff:"Medium",lc:"https://leetcode.com/problems/4sum/"},
+  {name:"Longest Consecutive Sequence",topic:"Hashing",diff:"Medium",lc:"https://leetcode.com/problems/longest-consecutive-sequence/"},
+  {name:"Largest Subarray with 0 Sum",topic:"Hashing",diff:"Medium",lc:"https://leetcode.com/problems/contiguous-array/"},
+  {name:"Count Subarrays with XOR=k",topic:"Hashing",diff:"Medium",lc:"https://leetcode.com/problems/count-subarrays-with-score-less-than-k/"},
+  {name:"Longest Substring without Repeat",topic:"Hashing",diff:"Medium",lc:"https://leetcode.com/problems/longest-substring-without-repeating-characters/"},
+  {name:"Reverse a Linked List",topic:"Linked List",diff:"Easy",lc:"https://leetcode.com/problems/reverse-linked-list/"},
+  {name:"Find Middle of Linked List",topic:"Linked List",diff:"Easy",lc:"https://leetcode.com/problems/middle-of-the-linked-list/"},
+  {name:"Merge Two Sorted Lists",topic:"Linked List",diff:"Easy",lc:"https://leetcode.com/problems/merge-two-sorted-lists/"},
+  {name:"Remove N-th Node from End",topic:"Linked List",diff:"Medium",lc:"https://leetcode.com/problems/remove-nth-node-from-end-of-list/"},
+  {name:"Delete a Given Node",topic:"Linked List",diff:"Easy",lc:"https://leetcode.com/problems/delete-node-in-a-linked-list/"},
+  {name:"Add Two Numbers (LL)",topic:"Linked List",diff:"Medium",lc:"https://leetcode.com/problems/add-two-numbers/"},
+  {name:"Intersection of Two Lists",topic:"Linked List",diff:"Easy",lc:"https://leetcode.com/problems/intersection-of-two-linked-lists/"},
+  {name:"Detect Cycle in Linked List",topic:"Linked List",diff:"Medium",lc:"https://leetcode.com/problems/linked-list-cycle/"},
+  {name:"Reverse Nodes in K-Groups",topic:"Linked List",diff:"Hard",lc:"https://leetcode.com/problems/reverse-nodes-in-k-group/"},
+  {name:"Check Palindrome Linked List",topic:"Linked List",diff:"Easy",lc:"https://leetcode.com/problems/palindrome-linked-list/"},
+  {name:"Flatten a Linked List",topic:"Linked List",diff:"Medium",lc:"https://leetcode.com/problems/flatten-a-multilevel-doubly-linked-list/"},
+  {name:"Rotate a Linked List",topic:"Linked List",diff:"Medium",lc:"https://leetcode.com/problems/rotate-list/"},
+  {name:"Clone List with Random Pointer",topic:"Linked List",diff:"Medium",lc:"https://leetcode.com/problems/copy-list-with-random-pointer/"},
+  {name:"3-Sum Problem",topic:"Two Pointer",diff:"Medium",lc:"https://leetcode.com/problems/3sum/"},
+  {name:"Trapping Rain Water",topic:"Two Pointer",diff:"Hard",lc:"https://leetcode.com/problems/trapping-rain-water/"},
+  {name:"Remove Duplicates from Sorted Array",topic:"Two Pointer",diff:"Easy",lc:"https://leetcode.com/problems/remove-duplicates-from-sorted-array/"},
+  {name:"Max Consecutive Ones",topic:"Two Pointer",diff:"Easy",lc:"https://leetcode.com/problems/max-consecutive-ones/"},
+  {name:"N Meetings in a Room",topic:"Greedy",diff:"Easy",lc:"https://leetcode.com/problems/meeting-rooms-ii/"},
+  {name:"Minimum Platforms",topic:"Greedy",diff:"Medium",lc:"https://leetcode.com/problems/minimum-number-of-arrows-to-burst-balloons/"},
+  {name:"Job Sequencing Problem",topic:"Greedy",diff:"Medium",lc:"https://leetcode.com/problems/task-scheduler/"},
+  {name:"Fractional Knapsack",topic:"Greedy",diff:"Medium",lc:"https://leetcode.com/problems/maximum-units-on-a-truck/"},
+  {name:"Minimum Coins",topic:"Greedy",diff:"Medium",lc:"https://leetcode.com/problems/coin-change/"},
+  {name:"Activity Selection",topic:"Greedy",diff:"Easy",lc:"https://leetcode.com/problems/non-overlapping-intervals/"},
+  {name:"Subset Sums",topic:"Recursion",diff:"Medium",lc:"https://leetcode.com/problems/subsets/"},
+  {name:"Subsets II (with duplicates)",topic:"Recursion",diff:"Medium",lc:"https://leetcode.com/problems/subsets-ii/"},
+  {name:"Combination Sum I",topic:"Recursion",diff:"Medium",lc:"https://leetcode.com/problems/combination-sum/"},
+  {name:"Combination Sum II",topic:"Recursion",diff:"Medium",lc:"https://leetcode.com/problems/combination-sum-ii/"},
+  {name:"Palindrome Partitioning",topic:"Recursion",diff:"Medium",lc:"https://leetcode.com/problems/palindrome-partitioning/"},
+  {name:"Permutation Sequence",topic:"Recursion",diff:"Hard",lc:"https://leetcode.com/problems/permutation-sequence/"},
+  {name:"All Permutations",topic:"Recursion",diff:"Medium",lc:"https://leetcode.com/problems/permutations/"},
+  {name:"N-Queens Problem",topic:"Backtracking",diff:"Hard",lc:"https://leetcode.com/problems/n-queens/"},
+  {name:"Sudoku Solver",topic:"Backtracking",diff:"Hard",lc:"https://leetcode.com/problems/sudoku-solver/"},
+  {name:"M-Coloring Problem",topic:"Backtracking",diff:"Hard",lc:"https://leetcode.com/problems/graph-coloring/"},
+  {name:"Rat in a Maze",topic:"Backtracking",diff:"Medium",lc:"https://leetcode.com/problems/unique-paths-iii/"},
+  {name:"Word Break (Backtracking)",topic:"Backtracking",diff:"Medium",lc:"https://leetcode.com/problems/word-break/"},
+  {name:"N-th Root of a Number",topic:"Binary Search",diff:"Medium",lc:"https://leetcode.com/problems/sqrtx/"},
+  {name:"Matrix Median",topic:"Binary Search",diff:"Hard",lc:"https://leetcode.com/problems/find-median-from-data-stream/"},
+  {name:"Single Element in Sorted Array",topic:"Binary Search",diff:"Medium",lc:"https://leetcode.com/problems/single-element-in-a-sorted-array/"},
+  {name:"Search in Rotated Sorted Array",topic:"Binary Search",diff:"Medium",lc:"https://leetcode.com/problems/search-in-rotated-sorted-array/"},
+  {name:"Median of Two Sorted Arrays",topic:"Binary Search",diff:"Hard",lc:"https://leetcode.com/problems/median-of-two-sorted-arrays/"},
+  {name:"Kth Element of Two Sorted Arrays",topic:"Binary Search",diff:"Hard",lc:"https://leetcode.com/problems/median-of-two-sorted-arrays/"},
+  {name:"Allocate Minimum Pages",topic:"Binary Search",diff:"Hard",lc:"https://leetcode.com/problems/capacity-to-ship-packages-within-d-days/"},
+  {name:"Aggressive Cows",topic:"Binary Search",diff:"Hard",lc:"https://leetcode.com/problems/maximize-the-minimum-powered-city/"},
+  {name:"Kth Largest Element in Array",topic:"Heaps",diff:"Medium",lc:"https://leetcode.com/problems/kth-largest-element-in-an-array/"},
+  {name:"Maximum Sum Combinations",topic:"Heaps",diff:"Medium",lc:"https://leetcode.com/problems/find-k-pairs-with-smallest-sums/"},
+  {name:"Find Median from Data Stream",topic:"Heaps",diff:"Hard",lc:"https://leetcode.com/problems/find-median-from-data-stream/"},
+  {name:"Merge K Sorted Lists",topic:"Heaps",diff:"Hard",lc:"https://leetcode.com/problems/merge-k-sorted-lists/"},
+  {name:"K Most Frequent Elements",topic:"Heaps",diff:"Medium",lc:"https://leetcode.com/problems/top-k-frequent-elements/"},
+  {name:"Task Scheduler",topic:"Heaps",diff:"Medium",lc:"https://leetcode.com/problems/task-scheduler/"},
+  {name:"Next Greater Element",topic:"Stack & Queue",diff:"Easy",lc:"https://leetcode.com/problems/next-greater-element-i/"},
+  {name:"Sort a Stack",topic:"Stack & Queue",diff:"Easy",lc:"https://leetcode.com/problems/sort-an-array/"},
+  {name:"LRU Cache",topic:"Stack & Queue",diff:"Medium",lc:"https://leetcode.com/problems/lru-cache/"},
+  {name:"Largest Rectangle in Histogram",topic:"Stack & Queue",diff:"Hard",lc:"https://leetcode.com/problems/largest-rectangle-in-histogram/"},
+  {name:"Sliding Window Maximum",topic:"Stack & Queue",diff:"Hard",lc:"https://leetcode.com/problems/sliding-window-maximum/"},
+  {name:"Implement Min Stack",topic:"Stack & Queue",diff:"Medium",lc:"https://leetcode.com/problems/min-stack/"},
+  {name:"Rotten Oranges (BFS)",topic:"Stack & Queue",diff:"Medium",lc:"https://leetcode.com/problems/rotting-oranges/"},
+  {name:"Stock Span Problem",topic:"Stack & Queue",diff:"Medium",lc:"https://leetcode.com/problems/online-stock-span/"},
+  {name:"Celebrity Problem",topic:"Stack & Queue",diff:"Medium",lc:"https://leetcode.com/problems/find-the-celebrity/"},
+  {name:"Reverse Words in a String",topic:"Strings",diff:"Medium",lc:"https://leetcode.com/problems/reverse-words-in-a-string/"},
+  {name:"Longest Palindromic Substring",topic:"Strings",diff:"Medium",lc:"https://leetcode.com/problems/longest-palindromic-substring/"},
+  {name:"Roman to Integer",topic:"Strings",diff:"Easy",lc:"https://leetcode.com/problems/roman-to-integer/"},
+  {name:"String to Integer (atoi)",topic:"Strings",diff:"Medium",lc:"https://leetcode.com/problems/string-to-integer-atoi/"},
+  {name:"Count and Say",topic:"Strings",diff:"Medium",lc:"https://leetcode.com/problems/count-and-say/"},
+  {name:"Compare Version Numbers",topic:"Strings",diff:"Medium",lc:"https://leetcode.com/problems/compare-version-numbers/"},
+  {name:"Valid Anagram",topic:"Strings",diff:"Easy",lc:"https://leetcode.com/problems/valid-anagram/"},
+  {name:"Minimum Window Substring",topic:"Strings",diff:"Hard",lc:"https://leetcode.com/problems/minimum-window-substring/"},
+  {name:"KMP / Find First Occurrence",topic:"Strings",diff:"Hard",lc:"https://leetcode.com/problems/find-the-index-of-the-first-occurrence-in-a-string/"},
+  {name:"Inorder Traversal",topic:"Binary Tree",diff:"Easy",lc:"https://leetcode.com/problems/binary-tree-inorder-traversal/"},
+  {name:"Preorder Traversal",topic:"Binary Tree",diff:"Easy",lc:"https://leetcode.com/problems/binary-tree-preorder-traversal/"},
+  {name:"Postorder Traversal",topic:"Binary Tree",diff:"Easy",lc:"https://leetcode.com/problems/binary-tree-postorder-traversal/"},
+  {name:"Morris Inorder Traversal",topic:"Binary Tree",diff:"Medium",lc:"https://leetcode.com/problems/binary-tree-inorder-traversal/"},
+  {name:"Left / Right View of Tree",topic:"Binary Tree",diff:"Easy",lc:"https://leetcode.com/problems/binary-tree-right-side-view/"},
+  {name:"Top View of Tree",topic:"Binary Tree",diff:"Medium",lc:"https://leetcode.com/problems/vertical-order-traversal-of-a-binary-tree/"},
+  {name:"Bottom View of Tree",topic:"Binary Tree",diff:"Medium",lc:"https://leetcode.com/problems/vertical-order-traversal-of-a-binary-tree/"},
+  {name:"ZigZag Level Order Traversal",topic:"Binary Tree",diff:"Medium",lc:"https://leetcode.com/problems/binary-tree-zigzag-level-order-traversal/"},
+  {name:"Boundary Traversal of Tree",topic:"Binary Tree",diff:"Medium",lc:"https://leetcode.com/problems/boundary-of-binary-tree/"},
+  {name:"Maximum Path Sum in Binary Tree",topic:"Binary Tree",diff:"Hard",lc:"https://leetcode.com/problems/binary-tree-maximum-path-sum/"},
+  {name:"Construct Tree from Inorder+Preorder",topic:"Binary Tree",diff:"Medium",lc:"https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/"},
+  {name:"Construct Tree from Inorder+Postorder",topic:"Binary Tree",diff:"Medium",lc:"https://leetcode.com/problems/construct-binary-tree-from-inorder-and-postorder-traversal/"},
+  {name:"Symmetric Tree",topic:"Binary Tree",diff:"Easy",lc:"https://leetcode.com/problems/symmetric-tree/"},
+  {name:"Flatten Binary Tree to Linked List",topic:"Binary Tree",diff:"Medium",lc:"https://leetcode.com/problems/flatten-binary-tree-to-linked-list/"},
+  {name:"LCA of Binary Tree",topic:"Binary Tree",diff:"Medium",lc:"https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/"},
+  {name:"Max Width of Binary Tree",topic:"Binary Tree",diff:"Medium",lc:"https://leetcode.com/problems/maximum-width-of-binary-tree/"},
+  {name:"Children Sum Property",topic:"Binary Tree",diff:"Easy",lc:"https://leetcode.com/problems/sum-of-left-leaves/"},
+  {name:"All Nodes Distance K in Binary Tree",topic:"Binary Tree",diff:"Medium",lc:"https://leetcode.com/problems/all-nodes-distance-k-in-binary-tree/"},
+  {name:"Time to Burn Binary Tree",topic:"Binary Tree",diff:"Hard",lc:"https://leetcode.com/problems/amount-of-time-for-binary-tree-to-be-infected/"},
+  {name:"Count Total Nodes in Complete BT",topic:"Binary Tree",diff:"Medium",lc:"https://leetcode.com/problems/count-complete-tree-nodes/"},
+  {name:"Populate Next Right Pointers",topic:"BST",diff:"Medium",lc:"https://leetcode.com/problems/populating-next-right-pointers-in-each-node/"},
+  {name:"Search in BST",topic:"BST",diff:"Easy",lc:"https://leetcode.com/problems/search-in-a-binary-search-tree/"},
+  {name:"Construct BST from Preorder",topic:"BST",diff:"Medium",lc:"https://leetcode.com/problems/construct-binary-search-tree-from-preorder-traversal/"},
+  {name:"Validate Binary Search Tree",topic:"BST",diff:"Medium",lc:"https://leetcode.com/problems/validate-binary-search-tree/"},
+  {name:"LCA of BST",topic:"BST",diff:"Medium",lc:"https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/"},
+  {name:"Floor / Ceil in BST",topic:"BST",diff:"Medium",lc:"https://leetcode.com/problems/range-sum-of-bst/"},
+  {name:"Kth Smallest in BST",topic:"BST",diff:"Easy",lc:"https://leetcode.com/problems/kth-smallest-element-in-a-bst/"},
+  {name:"Inorder Successor in BST",topic:"BST",diff:"Medium",lc:"https://leetcode.com/problems/inorder-successor-in-bst/"},
+  {name:"BST Iterator",topic:"BST",diff:"Medium",lc:"https://leetcode.com/problems/binary-search-tree-iterator/"},
+  {name:"Two Sum in BST",topic:"BST",diff:"Easy",lc:"https://leetcode.com/problems/two-sum-iv-input-is-a-bst/"},
+  {name:"Recover BST (Swap Two Nodes)",topic:"BST",diff:"Hard",lc:"https://leetcode.com/problems/recover-binary-search-tree/"},
+  {name:"Largest BST in Binary Tree",topic:"BST",diff:"Hard",lc:"https://leetcode.com/problems/maximum-sum-bst-in-binary-tree/"},
+  {name:"Clone a Graph",topic:"Graphs",diff:"Medium",lc:"https://leetcode.com/problems/clone-graph/"},
+  {name:"DFS Traversal of Graph",topic:"Graphs",diff:"Easy",lc:"https://leetcode.com/problems/number-of-islands/"},
+  {name:"BFS Traversal of Graph",topic:"Graphs",diff:"Easy",lc:"https://leetcode.com/problems/binary-tree-level-order-traversal/"},
+  {name:"Detect Cycle in Undirected Graph",topic:"Graphs",diff:"Medium",lc:"https://leetcode.com/problems/redundant-connection/"},
+  {name:"Detect Cycle in Directed Graph",topic:"Graphs",diff:"Medium",lc:"https://leetcode.com/problems/course-schedule/"},
+  {name:"Topological Sort (BFS/DFS)",topic:"Graphs",diff:"Medium",lc:"https://leetcode.com/problems/course-schedule-ii/"},
+  {name:"Number of Islands",topic:"Graphs",diff:"Medium",lc:"https://leetcode.com/problems/number-of-islands/"},
+  {name:"Bipartite Graph Check",topic:"Graphs",diff:"Medium",lc:"https://leetcode.com/problems/is-graph-bipartite/"},
+  {name:"Strongly Connected Components (Kosaraju)",topic:"Graphs",diff:"Hard",lc:"https://leetcode.com/problems/number-of-strongly-connected-components/"},
+  {name:"Dijkstra's Algorithm",topic:"Graphs",diff:"Medium",lc:"https://leetcode.com/problems/network-delay-time/"},
+  {name:"Bellman Ford Algorithm",topic:"Graphs",diff:"Medium",lc:"https://leetcode.com/problems/find-the-city-with-the-smallest-number-of-neighbors/"},
+  {name:"Floyd Warshall Algorithm",topic:"Graphs",diff:"Medium",lc:"https://leetcode.com/problems/find-the-city-with-the-smallest-number-of-neighbors/"},
+  {name:"MST — Prim's Algorithm",topic:"Graphs",diff:"Medium",lc:"https://leetcode.com/problems/min-cost-to-connect-all-points/"},
+  {name:"MST — Kruskal's + DSU",topic:"Graphs",diff:"Medium",lc:"https://leetcode.com/problems/min-cost-to-connect-all-points/"},
+  {name:"Flood Fill",topic:"Graphs",diff:"Easy",lc:"https://leetcode.com/problems/flood-fill/"},
+  {name:"Path with Maximum Probability",topic:"Graphs",diff:"Medium",lc:"https://leetcode.com/problems/path-with-maximum-probability/"},
+  {name:"Max Product Subarray",topic:"DP",diff:"Medium",lc:"https://leetcode.com/problems/maximum-product-subarray/"},
+  {name:"Longest Increasing Subsequence",topic:"DP",diff:"Medium",lc:"https://leetcode.com/problems/longest-increasing-subsequence/"},
+  {name:"Longest Common Subsequence",topic:"DP",diff:"Medium",lc:"https://leetcode.com/problems/longest-common-subsequence/"},
+  {name:"0/1 Knapsack",topic:"DP",diff:"Medium",lc:"https://leetcode.com/problems/ones-and-zeroes/"},
+  {name:"Edit Distance",topic:"DP",diff:"Hard",lc:"https://leetcode.com/problems/edit-distance/"},
+  {name:"Max Sum Rectangle in Matrix",topic:"DP",diff:"Hard",lc:"https://leetcode.com/problems/max-sum-of-rectangle-no-larger-than-k/"},
+  {name:"Egg Drop Problem",topic:"DP",diff:"Hard",lc:"https://leetcode.com/problems/super-egg-drop/"},
+  {name:"Matrix Chain Multiplication",topic:"DP",diff:"Hard",lc:"https://leetcode.com/problems/minimum-score-triangulation-of-polygon/"},
+  {name:"Palindrome Partitioning II",topic:"DP",diff:"Hard",lc:"https://leetcode.com/problems/palindrome-partitioning-ii/"},
+  {name:"Coin Change (Ways)",topic:"DP",diff:"Medium",lc:"https://leetcode.com/problems/coin-change-ii/"},
+  {name:"Word Break (DP)",topic:"DP",diff:"Medium",lc:"https://leetcode.com/problems/word-break/"},
+  {name:"Burst Balloons",topic:"DP",diff:"Hard",lc:"https://leetcode.com/problems/burst-balloons/"},
+  {name:"Implement Trie (Prefix Tree)",topic:"Tries",diff:"Medium",lc:"https://leetcode.com/problems/implement-trie-prefix-tree/"},
+  {name:"Design Add and Search Words DS",topic:"Tries",diff:"Medium",lc:"https://leetcode.com/problems/design-add-and-search-words-data-structure/"},
+  {name:"Longest Word with All Prefixes",topic:"Tries",diff:"Medium",lc:"https://leetcode.com/problems/longest-word-in-dictionary/"},
+  {name:"Count Distinct Substrings",topic:"Tries",diff:"Hard",lc:"https://leetcode.com/problems/count-different-palindromic-subsequences/"},
+  {name:"Maximum XOR with an Element",topic:"Tries",diff:"Hard",lc:"https://leetcode.com/problems/maximum-xor-with-an-element-from-array/"},
+];
+
+const TOTAL = SDE_SHEET.length;
+const DAYS = 30;
+
+function buildSchedule() {
+  const baseSize = Math.floor(TOTAL / DAYS);
+  const extra = TOTAL % DAYS;
+  const schedule = [];
+  let idx = 0;
+  for (let d = 0; d < DAYS; d++) {
+    const size = baseSize + (d < extra ? 1 : 0);
+    schedule.push(SDE_SHEET.slice(idx, idx + size));
+    idx += size;
+  }
+  return schedule;
+}
+
+const SCHEDULE = buildSchedule();
+
+const STORAGE_KEY = 'dsa_grind_v2';
+const START_KEY = 'dsa_grind_start_v2';
+
+function loadState() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch { return {}; }
+}
+function saveState(s) { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); }
+
+function getStartDate() {
+  let d = localStorage.getItem(START_KEY);
+  if (!d) { d = new Date().toISOString().split('T')[0]; localStorage.setItem(START_KEY, d); }
+  return new Date(d + 'T00:00:00');
+}
+
+let state = loadState();
+const startDate = getStartDate();
+
+function getToday() {
+  const now = new Date();
+  const diff = Math.floor((now - startDate) / 86400000);
+  return Math.min(Math.max(diff, 0), DAYS - 1);
+}
+
+let currentDay = getToday();
+
+function problemKey(dayIdx, probIdx) { return `d${dayIdx}_p${probIdx}`; }
+function isProblemSolved(dayIdx, probIdx) { return !!state[problemKey(dayIdx, probIdx)]; }
+
+function toggleProblem(dayIdx, probIdx) {
+  const k = problemKey(dayIdx, probIdx);
+  state[k] = !state[k];
+  saveState(state);
+  render();
+}
+
+function getDayStats(dayIdx) {
+  const probs = SCHEDULE[dayIdx] || [];
+  const solved = probs.filter((_, i) => isProblemSolved(dayIdx, i)).length;
+  return { total: probs.length, solved };
+}
+
+function getAllStats() {
+  let easy = 0, medium = 0, hard = 0, total = 0;
+  SCHEDULE.forEach((probs, dayIdx) => {
+    probs.forEach((p, i) => {
+      if (isProblemSolved(dayIdx, i)) { total++; if (p.diff === 'Easy') easy++; else if (p.diff === 'Medium') medium++; else hard++; }
+    });
+  });
+  return { easy, medium, hard, total };
+}
+
+function getMissedInfo() {
+  const today = getToday();
+  let missedDays = 0, missedProblems = 0;
+  for (let d = 0; d < today; d++) {
+    const { total, solved } = getDayStats(d);
+    if (solved < total) { missedDays++; missedProblems += total - solved; }
+  }
+  return { missedDays, missedProblems };
+}
+
+function render() {
+  const stats = getAllStats();
+  const today = getToday();
+
+  document.getElementById('h-solved').textContent = stats.total;
+  document.getElementById('h-remaining').textContent = TOTAL - stats.total;
+  document.getElementById('h-day').textContent = `DAY ${today + 1}`;
+
+  const pct = Math.round((stats.total / TOTAL) * 100);
+  document.getElementById('main-bar').style.width = pct + '%';
+  document.getElementById('main-bar-text').textContent = `${stats.total} / ${TOTAL} problems completed`;
+  document.getElementById('pct-num').textContent = pct + '%';
+  const daysLeft = Math.max(0, DAYS - today - 1);
+  document.getElementById('days-left-text').textContent = `${daysLeft} day${daysLeft !== 1 ? 's' : ''} remaining`;
+
+  document.getElementById('s-easy').textContent = stats.easy;
+  document.getElementById('s-medium').textContent = stats.medium;
+  document.getElementById('s-hard').textContent = stats.hard;
+
+  renderCalendar(today);
+  renderDay(currentDay, today);
+}
+
+function renderCalendar(today) {
+  const strip = document.getElementById('cal-strip');
+  strip.innerHTML = '';
+  for (let d = 0; d < DAYS; d++) {
+    const { total, solved } = getDayStats(d);
+    const div = document.createElement('div');
+    div.className = 'cal-day';
+    div.textContent = d + 1;
+    div.title = `Day ${d + 1}: ${solved}/${total} solved`;
+    if (d > today) div.classList.add('future');
+    else if (d === today) div.classList.add(solved === total && total > 0 ? 'done' : 'today');
+    else if (solved === total) div.classList.add('done');
+    else if (solved > 0) div.classList.add('partial');
+    else div.classList.add('missed');
+    if (d <= today) div.addEventListener('click', () => { currentDay = d; render(); });
+    strip.appendChild(div);
+  }
+  // Scroll today into view
+  const todayEl = strip.children[today];
+  if (todayEl) setTimeout(() => todayEl.scrollIntoView({ inline: 'center', behavior: 'smooth' }), 100);
+}
+
+function renderDay(dayIdx, today) {
+  document.getElementById('cur-day-num').textContent = dayIdx + 1;
+  const dateObj = new Date(startDate);
+  dateObj.setDate(dateObj.getDate() + dayIdx);
+  document.getElementById('cur-date-str').textContent = dateObj.toLocaleDateString('en-IN', { month: 'short', day: 'numeric', weekday: 'short' });
+
+  // Missed alert (only on today's view)
+  const missedAlert = document.getElementById('missed-alert');
+  if (dayIdx === today) {
+    const { missedDays, missedProblems } = getMissedInfo();
+    if (missedDays > 0) {
+      missedAlert.style.display = 'flex';
+      document.getElementById('missed-text').innerHTML = `<strong>${missedDays} day${missedDays > 1 ? 's' : ''} incomplete</strong> — ${missedProblems} unsolved problems from earlier days. Click past days in the calendar to catch up!`;
+    } else {
+      missedAlert.style.display = 'none';
+    }
+  } else {
+    missedAlert.style.display = 'none';
+  }
+
+  const { total, solved } = getDayStats(dayIdx);
+  const pct = total > 0 ? Math.round((solved / total) * 100) : 0;
+  document.getElementById('day-bar').style.width = pct + '%';
+  document.getElementById('day-count-text').innerHTML = `<strong>${solved}</strong> / ${total} done`;
+
+  const list = document.getElementById('problems-list');
+  list.innerHTML = '';
+  const probs = SCHEDULE[dayIdx] || [];
+  probs.forEach((p, i) => {
+    const isSolved = isProblemSolved(dayIdx, i);
+    const card = document.createElement('div');
+    card.className = 'problem-card' + (isSolved ? ' solved' : '');
+    card.innerHTML = `
+      <div class="problem-check"><span class="check-icon">✓</span></div>
+      <div>
+        <div class="problem-name">${p.name}</div>
+        <div class="problem-topic">${p.topic}</div>
+      </div>
+      <div class="diff-badge diff-${p.diff}">${p.diff}</div>
+      <a class="lc-link" href="${p.lc}" target="_blank" rel="noopener" onclick="event.stopPropagation()">LC →</a>
+    `;
+    card.addEventListener('click', () => toggleProblem(dayIdx, i));
+    list.appendChild(card);
+  });
+
+  document.getElementById('prev-btn').onclick = () => { if (currentDay > 0) { currentDay--; render(); } };
+  document.getElementById('next-btn').onclick = () => { if (currentDay < today) { currentDay++; render(); } };
+  document.getElementById('today-btn').onclick = () => { currentDay = today; render(); };
+}
+
+window.resetProgress = function() {
+  if (confirm('Reset ALL progress? This cannot be undone.')) {
+    state = {};
+    saveState(state);
+    render();
+  }
+};
+
+render();
+</script>
+</body>
+</html>
