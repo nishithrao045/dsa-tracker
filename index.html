@@ -469,7 +469,7 @@ function renderCalendar(today) {
     else if (solved === total) div.classList.add('done');
     else if (solved > 0) div.classList.add('partial');
     else div.classList.add('missed');
-    if (d <= today) div.addEventListener('click', () => { currentDay = d; render(); });
+    div.addEventListener('click', () => { currentDay = d; render(); });
     strip.appendChild(div);
   }
   // Scroll today into view
