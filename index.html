@@ -195,6 +195,7 @@
 
 <script>
 const SDE_SHEET = [
+  // Arrays
   {name:"Set Matrix Zeros",topic:"Arrays",diff:"Medium",lc:"https://leetcode.com/problems/set-matrix-zeroes/"},
   {name:"Pascal's Triangle",topic:"Arrays",diff:"Easy",lc:"https://leetcode.com/problems/pascals-triangle/"},
   {name:"Next Permutation",topic:"Arrays",diff:"Medium",lc:"https://leetcode.com/problems/next-permutation/"},
@@ -203,22 +204,24 @@ const SDE_SHEET = [
   {name:"Best Time to Buy and Sell Stock",topic:"Arrays",diff:"Easy",lc:"https://leetcode.com/problems/best-time-to-buy-and-sell-stock/"},
   {name:"Rotate Matrix 90°",topic:"Arrays",diff:"Medium",lc:"https://leetcode.com/problems/rotate-image/"},
   {name:"Merge Overlapping Intervals",topic:"Arrays",diff:"Medium",lc:"https://leetcode.com/problems/merge-intervals/"},
-  {name:"Merge Two Sorted Arrays",topic:"Arrays",diff:"Easy",lc:"https://leetcode.com/problems/merge-sorted-array/"},
+  {name:"Merge Two Sorted Arrays Without Extra Space",topic:"Arrays",diff:"Hard",lc:"https://leetcode.com/problems/merge-sorted-array/"},
   {name:"Find Duplicate in Array",topic:"Arrays",diff:"Medium",lc:"https://leetcode.com/problems/find-the-duplicate-number/"},
   {name:"Repeat and Missing Number",topic:"Arrays",diff:"Hard",lc:"https://leetcode.com/problems/set-mismatch/"},
   {name:"Count Inversions",topic:"Arrays",diff:"Hard",lc:"https://leetcode.com/problems/sort-an-array/"},
-  {name:"Search in 2D Matrix",topic:"Matrix",diff:"Medium",lc:"https://leetcode.com/problems/search-a-2d-matrix/"},
-  {name:"Pow(x, n)",topic:"Math",diff:"Medium",lc:"https://leetcode.com/problems/powx-n/"},
+  {name:"Search in 2D Matrix",topic:"Arrays",diff:"Medium",lc:"https://leetcode.com/problems/search-a-2d-matrix/"},
+  {name:"Pow(x, n)",topic:"Arrays",diff:"Medium",lc:"https://leetcode.com/problems/powx-n/"},
   {name:"Majority Element (>N/2)",topic:"Arrays",diff:"Easy",lc:"https://leetcode.com/problems/majority-element/"},
   {name:"Majority Element (>N/3)",topic:"Arrays",diff:"Medium",lc:"https://leetcode.com/problems/majority-element-ii/"},
-  {name:"Grid Unique Paths",topic:"DP",diff:"Medium",lc:"https://leetcode.com/problems/unique-paths/"},
+  {name:"Grid Unique Paths",topic:"Arrays",diff:"Medium",lc:"https://leetcode.com/problems/unique-paths/"},
   {name:"Reverse Pairs",topic:"Arrays",diff:"Hard",lc:"https://leetcode.com/problems/reverse-pairs/"},
   {name:"2-Sum Problem",topic:"Arrays",diff:"Easy",lc:"https://leetcode.com/problems/two-sum/"},
   {name:"4-Sum Problem",topic:"Arrays",diff:"Medium",lc:"https://leetcode.com/problems/4sum/"},
+  // Hashing
   {name:"Longest Consecutive Sequence",topic:"Hashing",diff:"Medium",lc:"https://leetcode.com/problems/longest-consecutive-sequence/"},
   {name:"Largest Subarray with 0 Sum",topic:"Hashing",diff:"Medium",lc:"https://leetcode.com/problems/contiguous-array/"},
-  {name:"Count Subarrays with XOR=k",topic:"Hashing",diff:"Medium",lc:"https://leetcode.com/problems/count-subarrays-with-score-less-than-k/"},
+  {name:"Count Subarrays with XOR=k",topic:"Hashing",diff:"Medium",lc:"https://leetcode.com/problems/subarray-sum-equals-k/"},
   {name:"Longest Substring without Repeat",topic:"Hashing",diff:"Medium",lc:"https://leetcode.com/problems/longest-substring-without-repeating-characters/"},
+  // Linked List
   {name:"Reverse a Linked List",topic:"Linked List",diff:"Easy",lc:"https://leetcode.com/problems/reverse-linked-list/"},
   {name:"Find Middle of Linked List",topic:"Linked List",diff:"Easy",lc:"https://leetcode.com/problems/middle-of-the-linked-list/"},
   {name:"Merge Two Sorted Lists",topic:"Linked List",diff:"Easy",lc:"https://leetcode.com/problems/merge-two-sorted-lists/"},
@@ -229,19 +232,23 @@ const SDE_SHEET = [
   {name:"Detect Cycle in Linked List",topic:"Linked List",diff:"Medium",lc:"https://leetcode.com/problems/linked-list-cycle/"},
   {name:"Reverse Nodes in K-Groups",topic:"Linked List",diff:"Hard",lc:"https://leetcode.com/problems/reverse-nodes-in-k-group/"},
   {name:"Check Palindrome Linked List",topic:"Linked List",diff:"Easy",lc:"https://leetcode.com/problems/palindrome-linked-list/"},
+  {name:"Find Start of Cycle in Linked List",topic:"Linked List",diff:"Medium",lc:"https://leetcode.com/problems/linked-list-cycle-ii/"},
   {name:"Flatten a Linked List",topic:"Linked List",diff:"Medium",lc:"https://leetcode.com/problems/flatten-a-multilevel-doubly-linked-list/"},
   {name:"Rotate a Linked List",topic:"Linked List",diff:"Medium",lc:"https://leetcode.com/problems/rotate-list/"},
   {name:"Clone List with Random Pointer",topic:"Linked List",diff:"Medium",lc:"https://leetcode.com/problems/copy-list-with-random-pointer/"},
+  // Two Pointer
   {name:"3-Sum Problem",topic:"Two Pointer",diff:"Medium",lc:"https://leetcode.com/problems/3sum/"},
   {name:"Trapping Rain Water",topic:"Two Pointer",diff:"Hard",lc:"https://leetcode.com/problems/trapping-rain-water/"},
   {name:"Remove Duplicates from Sorted Array",topic:"Two Pointer",diff:"Easy",lc:"https://leetcode.com/problems/remove-duplicates-from-sorted-array/"},
   {name:"Max Consecutive Ones",topic:"Two Pointer",diff:"Easy",lc:"https://leetcode.com/problems/max-consecutive-ones/"},
+  // Greedy
   {name:"N Meetings in a Room",topic:"Greedy",diff:"Easy",lc:"https://leetcode.com/problems/meeting-rooms-ii/"},
   {name:"Minimum Platforms",topic:"Greedy",diff:"Medium",lc:"https://leetcode.com/problems/minimum-number-of-arrows-to-burst-balloons/"},
   {name:"Job Sequencing Problem",topic:"Greedy",diff:"Medium",lc:"https://leetcode.com/problems/task-scheduler/"},
   {name:"Fractional Knapsack",topic:"Greedy",diff:"Medium",lc:"https://leetcode.com/problems/maximum-units-on-a-truck/"},
   {name:"Minimum Coins",topic:"Greedy",diff:"Medium",lc:"https://leetcode.com/problems/coin-change/"},
   {name:"Activity Selection",topic:"Greedy",diff:"Easy",lc:"https://leetcode.com/problems/non-overlapping-intervals/"},
+  // Recursion & Backtracking
   {name:"Subset Sums",topic:"Recursion",diff:"Medium",lc:"https://leetcode.com/problems/subsets/"},
   {name:"Subsets II (with duplicates)",topic:"Recursion",diff:"Medium",lc:"https://leetcode.com/problems/subsets-ii/"},
   {name:"Combination Sum I",topic:"Recursion",diff:"Medium",lc:"https://leetcode.com/problems/combination-sum/"},
@@ -251,9 +258,10 @@ const SDE_SHEET = [
   {name:"All Permutations",topic:"Recursion",diff:"Medium",lc:"https://leetcode.com/problems/permutations/"},
   {name:"N-Queens Problem",topic:"Backtracking",diff:"Hard",lc:"https://leetcode.com/problems/n-queens/"},
   {name:"Sudoku Solver",topic:"Backtracking",diff:"Hard",lc:"https://leetcode.com/problems/sudoku-solver/"},
-  {name:"M-Coloring Problem",topic:"Backtracking",diff:"Hard",lc:"https://leetcode.com/problems/graph-coloring/"},
+  {name:"M-Coloring Problem",topic:"Backtracking",diff:"Hard",lc:"https://leetcode.com/problems/graph-valid-tree/"},
   {name:"Rat in a Maze",topic:"Backtracking",diff:"Medium",lc:"https://leetcode.com/problems/unique-paths-iii/"},
   {name:"Word Break (Backtracking)",topic:"Backtracking",diff:"Medium",lc:"https://leetcode.com/problems/word-break/"},
+  // Binary Search
   {name:"N-th Root of a Number",topic:"Binary Search",diff:"Medium",lc:"https://leetcode.com/problems/sqrtx/"},
   {name:"Matrix Median",topic:"Binary Search",diff:"Hard",lc:"https://leetcode.com/problems/find-median-from-data-stream/"},
   {name:"Single Element in Sorted Array",topic:"Binary Search",diff:"Medium",lc:"https://leetcode.com/problems/single-element-in-a-sorted-array/"},
@@ -351,6 +359,52 @@ const SDE_SHEET = [
   {name:"Longest Word with All Prefixes",topic:"Tries",diff:"Medium",lc:"https://leetcode.com/problems/longest-word-in-dictionary/"},
   {name:"Count Distinct Substrings",topic:"Tries",diff:"Hard",lc:"https://leetcode.com/problems/count-different-palindromic-subsequences/"},
   {name:"Maximum XOR with an Element",topic:"Tries",diff:"Hard",lc:"https://leetcode.com/problems/maximum-xor-with-an-element-from-array/"},
+  {name:"Maximum XOR of Two Numbers",topic:"Tries",diff:"Medium",lc:"https://leetcode.com/problems/maximum-xor-of-two-numbers-in-an-array/"},
+  // Strings (missing)
+  {name:"Longest Common Prefix",topic:"Strings",diff:"Easy",lc:"https://leetcode.com/problems/longest-common-prefix/"},
+  {name:"Rabin Karp Algorithm",topic:"Strings",diff:"Medium",lc:"https://leetcode.com/problems/implement-strstr/"},
+  {name:"Z-Function",topic:"Strings",diff:"Medium",lc:"https://leetcode.com/problems/find-the-index-of-the-first-occurrence-in-a-string/"},
+  {name:"Minimum Characters to Make Palindrome",topic:"Strings",diff:"Hard",lc:"https://leetcode.com/problems/shortest-palindrome/"},
+  // Stack & Queue (missing)
+  {name:"Delete Middle of Stack",topic:"Stack & Queue",diff:"Medium",lc:"https://leetcode.com/problems/remove-k-digits/"},
+  {name:"LFU Cache",topic:"Stack & Queue",diff:"Hard",lc:"https://leetcode.com/problems/lfu-cache/"},
+  // Binary Tree (missing)
+  {name:"Morris Preorder Traversal",topic:"Binary Tree",diff:"Medium",lc:"https://leetcode.com/problems/binary-tree-preorder-traversal/"},
+  {name:"Vertical Order Traversal",topic:"Binary Tree",diff:"Hard",lc:"https://leetcode.com/problems/vertical-order-traversal-of-a-binary-tree/"},
+  {name:"Height of Binary Tree",topic:"Binary Tree",diff:"Easy",lc:"https://leetcode.com/problems/maximum-depth-of-binary-tree/"},
+  {name:"Diameter of Binary Tree",topic:"Binary Tree",diff:"Easy",lc:"https://leetcode.com/problems/diameter-of-binary-tree/"},
+  {name:"Check Height Balanced Binary Tree",topic:"Binary Tree",diff:"Easy",lc:"https://leetcode.com/problems/balanced-binary-tree/"},
+  {name:"Identical Trees Check",topic:"Binary Tree",diff:"Easy",lc:"https://leetcode.com/problems/same-tree/"},
+  // Graphs (missing)
+  {name:"Word Ladder I",topic:"Graphs",diff:"Hard",lc:"https://leetcode.com/problems/word-ladder/"},
+  {name:"Word Ladder II",topic:"Graphs",diff:"Hard",lc:"https://leetcode.com/problems/word-ladder-ii/"},
+  // DP (missing)
+  {name:"Maximum Sum Increasing Subsequence",topic:"DP",diff:"Medium",lc:"https://leetcode.com/problems/number-of-longest-increasing-subsequence/"},
+  {name:"Subset Sum Problem",topic:"DP",diff:"Medium",lc:"https://leetcode.com/problems/partition-equal-subset-sum/"},
+  {name:"Rod Cutting Problem",topic:"DP",diff:"Medium",lc:"https://leetcode.com/problems/minimum-cost-to-cut-a-stick/"},
+  {name:"Maximum Profit in Job Scheduling",topic:"DP",diff:"Hard",lc:"https://leetcode.com/problems/maximum-profit-in-job-scheduling/"},
+  // Heaps (missing)
+  {name:"Design Twitter",topic:"Heaps",diff:"Medium",lc:"https://leetcode.com/problems/design-twitter/"},
+  // Arrays (missing)
+  {name:"Best Time to Buy & Sell Stock II",topic:"Arrays",diff:"Medium",lc:"https://leetcode.com/problems/best-time-to-buy-and-sell-stock-ii/"},
+  {name:"Largest Subarray of 0s and 1s",topic:"Arrays",diff:"Medium",lc:"https://leetcode.com/problems/contiguous-array/"},
+  // Two Pointer (missing)
+  {name:"Container With Most Water",topic:"Two Pointer",diff:"Medium",lc:"https://leetcode.com/problems/container-with-most-water/"},
+  // BST (missing)
+  {name:"Merge Two BSTs",topic:"BST",diff:"Hard",lc:"https://leetcode.com/problems/all-elements-in-two-binary-search-trees/"},
+  // Graphs (missing)
+  {name:"Disjoint Set Union (DSU)",topic:"Graphs",diff:"Medium",lc:"https://leetcode.com/problems/number-of-provinces/"},
+  {name:"Kahn's Algorithm (Topo Sort BFS)",topic:"Graphs",diff:"Medium",lc:"https://leetcode.com/problems/course-schedule/"},
+  // DP (missing)
+  {name:"Partition Equal Subset Sum",topic:"DP",diff:"Medium",lc:"https://leetcode.com/problems/partition-equal-subset-sum/"},
+  {name:"Minimum Path Sum in Grid",topic:"DP",diff:"Medium",lc:"https://leetcode.com/problems/minimum-path-sum/"},
+  // Remaining Striver SDE problems
+  {name:"Spiral Order Matrix Traversal",topic:"Arrays",diff:"Medium",lc:"https://leetcode.com/problems/spiral-matrix/"},
+  {name:"Find Peak Element",topic:"Binary Search",diff:"Medium",lc:"https://leetcode.com/problems/find-peak-element/"},
+  {name:"Minimum in Rotated Sorted Array",topic:"Binary Search",diff:"Medium",lc:"https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/"},
+  {name:"Implement Queue Using Stacks",topic:"Stack & Queue",diff:"Easy",lc:"https://leetcode.com/problems/implement-queue-using-stacks/"},
+  {name:"Implement Stack Using Queues",topic:"Stack & Queue",diff:"Easy",lc:"https://leetcode.com/problems/implement-stack-using-queues/"},
+  {name:"Number of Ways to Reach Nth Stair",topic:"DP",diff:"Easy",lc:"https://leetcode.com/problems/climbing-stairs/"},
 ];
 
 const TOTAL = SDE_SHEET.length;
@@ -469,6 +523,7 @@ function renderCalendar(today) {
     else if (solved === total) div.classList.add('done');
     else if (solved > 0) div.classList.add('partial');
     else div.classList.add('missed');
+    if (d === currentDay) div.style.outline = '2px solid var(--accent)';
     div.addEventListener('click', () => { currentDay = d; render(); });
     strip.appendChild(div);
   }
@@ -523,7 +578,7 @@ function renderDay(dayIdx, today) {
   });
 
   document.getElementById('prev-btn').onclick = () => { if (currentDay > 0) { currentDay--; render(); } };
-  document.getElementById('next-btn').onclick = () => { if (currentDay < today) { currentDay++; render(); } };
+  document.getElementById('next-btn').onclick = () => { if (currentDay < DAYS - 1) { currentDay++; render(); } };
   document.getElementById('today-btn').onclick = () => { currentDay = today; render(); };
 }
 
